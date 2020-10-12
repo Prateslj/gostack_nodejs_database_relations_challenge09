@@ -4,7 +4,6 @@ import IProductsRepository from '@modules/products/repositories/IProductsReposit
 import ICreateProductDTO from '@modules/products/dtos/ICreateProductDTO';
 import IUpdateProductsQuantityDTO from '@modules/products/dtos/IUpdateProductsQuantityDTO';
 import Product from '../entities/Product';
-import AppError from '@shared/errors/AppError';
 
 interface IFindProducts {
   id: string;
@@ -39,12 +38,6 @@ class ProductsRepository implements IProductsRepository {
         name,
       },
     });
-
-    // if (!product) {
-    //   throw new AppError('product not found.');
-    // }
-    // findByName is used before creating a product, to verify if it already exists.
-    // Adding the block above will stop the product from being created.
 
     return product;
   }

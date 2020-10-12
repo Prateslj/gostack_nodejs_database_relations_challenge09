@@ -29,7 +29,9 @@ class CreateOrderService {
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    const existingCustomer = await this.customersRepository.findById(customer_id);
+    const existingCustomer = await this.customersRepository.findById(
+      customer_id,
+    );
 
     if (!existingCustomer) {
       throw new AppError('Could not find a customer using this CustomerID.');
@@ -43,46 +45,15 @@ class CreateOrderService {
 
     const productListIds = productList.map(product => product.id);
 
-    // console.log
-    // console.log(`   `);
-    // productListIds.map(item => {
-    //   console.log(`productListIds ID: ${item}`);
-    // });
-    // console.log(
-    //   `productListIds.includes(product.id):
-    //   ${productListIds.includes('ad9a480b-d863-4c85-8eb6-303336bf1d19')}`,
-    // );
-    // products.map(item => console.log(`prod quant order: ${item.quantity}`));
-
     const checkProductsNotFound = products.filter(
       product => !productListIds.includes(product.id),
     );
-
-    // console.log
-    // products.map(item => {
-    //   console.log(
-    //     `item: ${item.id} -> !productListIds.includes(item.id):
-    //     ${!productListIds.includes(item.id)}`,
-    //   );
-    // });
 
     if (checkProductsNotFound.length) {
       throw new AppError(
         `Could not find products: ${checkProductsNotFound[0].id}`,
       );
-    } // time 01:31:58
-
-    // console.log
-    // productList.map(item => {
-    //   products.map(product => {
-    //     if (item.id === product.id) {
-    //       console.log(`item id: ${item.id} -> quantity: ${item.quantity}`);
-    //       console.log(
-    //         `product id: ${product.id} -> quantity: ${product.quantity}`,
-    //       );
-    //     }
-    //   });
-    // });
+    }
 
     const productsWithoutAvailability = products.filter(
       product =>
@@ -104,8 +75,6 @@ class CreateOrderService {
       customer: existingCustomer,
       products: serializedProducts,
     });
-
-    // // const { order_products } = order;
 
     const orderProductsQuantity = products.map(product => ({
       id: product.id,
